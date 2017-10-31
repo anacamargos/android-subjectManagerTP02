@@ -5,6 +5,7 @@
     tools:context="com.example.ana.subjectmanager.TransitionFragment">
 
     <android.support.v7.widget.RecyclerView
+        android:paddingTop="110dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recycler_view"
@@ -15,7 +16,9 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <TextView
+
+
+    <!--<TextView
         android:id="@+id/textVideo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,5 +26,6 @@
         android:gravity="center"
         android:textSize="42sp"
         android:textStyle="bold"
-        android:layout_margin="100dp"/>
+        android:layout_margin="100dp"/> -->
 </FrameLayout>
+

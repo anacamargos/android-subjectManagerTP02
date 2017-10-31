@@ -51,7 +51,7 @@ public class TransitionFragment extends Fragment {
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-
+        //tabLayout.setVisibility(View.GONE);
         return view;
     }
 
