@@ -14,6 +14,16 @@
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp">
 
+        <!--<Button
+            android:id="@+id/button"
+            android:onClick="cadastrarEvento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Cadastrar Evento"
+            />-->
+
     </android.support.v7.widget.RecyclerView>
 
 
