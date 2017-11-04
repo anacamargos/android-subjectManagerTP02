@@ -3,14 +3,18 @@ package com.example.ana.subjectmanager;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -48,11 +52,7 @@ public class Tab_VideosFragment extends Fragment {
         listaDeVideo = new ArrayList<String>();
         listaDeVideo.add("Oi");
         listaDeVideo.add("Oi1");
-        listaDeVideo.add("Oi2");
-        listaDeVideo.add("Oi3");
-        listaDeVideo.add("Oi4");
-        listaDeVideo.add("Oi5");
-        listaDeVideo.add("Oi6");
+
 
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -62,8 +62,36 @@ public class Tab_VideosFragment extends Fragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listaDeVideo.add("TESTEEEE");
-                recyclerViewAdapter.notifyDataSetChanged();
+
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+
+                final View view1 = inflater.inflate(R.layout.dialog_video, null);
+                mBuilder.setView(view1);
+
+                final EditText videoEt = (EditText) view1.findViewById(R.id.eTVideo);
+                Button inserirVideoBtn = (Button) view1.findViewById(R.id.btnInserirVideo);
+
+                final AlertDialog dialog = mBuilder.create();
+                dialog.show();
+
+                inserirVideoBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!videoEt.getText().toString().isEmpty() ) {
+                            String video = videoEt.getText().toString();
+                            listaDeVideo.add(video);
+                            dialog.dismiss();
+                            Toast.makeText(getActivity(), "Inserido com sucesso!", Toast.LENGTH_SHORT).show();
+                            recyclerViewAdapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(getActivity(), "Favor preencher todos os campos", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                //listaDeVideo.add("TESTEEEE");
+                //recyclerViewAdapter.notifyDataSetChanged();
             }
         });
 

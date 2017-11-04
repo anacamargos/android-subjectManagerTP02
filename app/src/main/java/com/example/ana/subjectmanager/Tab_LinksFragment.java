@@ -3,6 +3,7 @@ package com.example.ana.subjectmanager;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -57,11 +60,7 @@ public class Tab_LinksFragment extends Fragment {
 
         listaDeLinks.add("Oi");
         listaDeLinks.add("Oi1");
-        listaDeLinks.add("Oi2");
-        listaDeLinks.add("Oi3");
-        listaDeLinks.add("Oi4");
-        listaDeLinks.add("Oi5");
-        listaDeLinks.add("Oi6");
+
 
         //TextView teste = (TextView)view.findViewById(R.id.textLink);
         //teste.setText(subjectName);
@@ -79,8 +78,34 @@ public class Tab_LinksFragment extends Fragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listaDeLinks.add("TESTEEEE");
-                recyclerViewAdapter.notifyDataSetChanged();
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+
+                final View view1 = inflater.inflate(R.layout.dialog_link, null);
+                mBuilder.setView(view1);
+
+                final EditText linkEt = (EditText) view1.findViewById(R.id.eTLink);
+                Button inserirLinkBtn = (Button) view1.findViewById(R.id.btnInserirLink);
+
+                final AlertDialog dialog = mBuilder.create();
+                dialog.show();
+
+                inserirLinkBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!linkEt.getText().toString().isEmpty() ) {
+                            String video = linkEt.getText().toString();
+                            listaDeLinks.add(video);
+                            dialog.dismiss();
+                            Toast.makeText(getActivity(), "Inserido com sucesso!", Toast.LENGTH_SHORT).show();
+                            recyclerViewAdapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(getActivity(), "Favor preencher todos os campos", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                //listaDeLinks.add("TESTEEEE");
+                //recyclerViewAdapter.notifyDataSetChanged();
             }
         });
 
