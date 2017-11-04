@@ -20,17 +20,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     FragmentManager fragmentManager;
     Menu menu;
-    LinkedList<String> anotherSubjects = new LinkedList<>(Arrays.asList("Banco de Dados", "Calculo I", "Cálculo II", "Cálculo III", "Algebra Linear", "Matemática Discreta", "Estatística", "AED 1", "AED 3", "LP", "PAA", "IA", "Compiladores", "PID", "Comp. Paralela", "Comp. Gráfica", "Otimização"));
     NavigationView navigationView;
+    String nomeMenuArquivo = "menu.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +65,17 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(View view) {
                         if (!subjectNameEt.getText().toString().isEmpty() ) {
                             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                            menu = navigationView.getMenu();
+                            //menu = navigationView.getMenu();
                             String subject = subjectNameEt.getText().toString();
-                            menu.add(subject);
-                            dialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Inserido com sucesso!", Toast.LENGTH_SHORT).show();
+                            if ( naoTemNoMenu(subject)) {
+                                addNoFile(subject);
+                                menu.add(subject);
+                                readFile();
+                                dialog.dismiss();
+                                Toast.makeText(MainActivity.this, "Inserido com sucesso!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MainActivity.this, "Essa matéria já foi inserida", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
                             Toast.makeText(MainActivity.this, "Favor preencher todos os campos", Toast.LENGTH_SHORT).show();
                         }
@@ -81,6 +94,7 @@ public class MainActivity extends AppCompatActivity
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         //.setAction("Action", null).show();
             }
+
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -92,6 +106,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+        readAndUpdate();
+        readFile();
 
 
     }
@@ -148,20 +167,122 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
         }
-        /*
-        if (id == R.id.nav_camera) {
-            fragmentManager.beginTransaction().replace(R.id.coordinator_layout, new TransitionFragment()).commit();
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        }*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    public void writeFile ( ) {
+        try {
+            FileOutputStream fos = openFileOutput(nomeMenuArquivo, MODE_PRIVATE);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            menu = navigationView.getMenu();
+            for (int i = 0; i < menu.size(); i ++ ) {
+                outputStreamWriter.write(menu.getItem(i).getTitle().toString()+ "\n");
+            }
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        } catch (Exception e ) {
+            e.printStackTrace();
+            Toast.makeText(this,"Erro ao salvar arquivo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void readFile ( ) {
+        File file = getApplicationContext().getFileStreamPath(nomeMenuArquivo);
+        String lineFromFile;
+
+        if(file.exists()) {
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(openFileInput(nomeMenuArquivo)));
+                while ((lineFromFile = reader.readLine()) != null) {
+                    //StringTokenizer tokens = new StringTokenizer(lineFromFile);
+                    System.out.println(lineFromFile);
+                }
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void addNoFile ( String adicional ) {
+        try {
+            FileOutputStream fos = openFileOutput(nomeMenuArquivo, MODE_APPEND);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            outputStreamWriter.write(adicional + "\n");
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        } catch (Exception e ) {
+            e.printStackTrace();
+            Toast.makeText(this,"Erro ao salvar arquivo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void readAndUpdate () {
+        File file = getApplicationContext().getFileStreamPath(nomeMenuArquivo);
+        String lineFromFile;
+        menu = navigationView.getMenu();
+        if(file.exists()) {
+            try {
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(openFileInput(nomeMenuArquivo)));
+                lineFromFile = reader.readLine();
+                while (lineFromFile != null) {
+                    menu.add(lineFromFile);
+                    lineFromFile = reader.readLine();
+                }
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                FileOutputStream fos = openFileOutput(nomeMenuArquivo, MODE_APPEND);
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+                outputStreamWriter.write("AED I\n");
+                outputStreamWriter.write("AED II\n");
+                outputStreamWriter.write("AED III\n");
+                outputStreamWriter.flush();
+                outputStreamWriter.close();
+
+                menu.add("AED I");
+                menu.add("AED II");
+                menu.add("AED III");
+
+            } catch (IOException e ) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public void onStop () {
+        super.onStop();
+        readFile();
+        //deleteFile();
+        writeFile();
+    }
+
+    public void deleteFile () {
+        File file = new File(getFilesDir(),nomeMenuArquivo);
+        if (file.exists()) {
+            deleteFile(nomeMenuArquivo);
+        }
+    }
+
+    public boolean naoTemNoMenu (String adicional) {
+        boolean retorno = true;
+        menu = navigationView.getMenu();
+        if (menu.size() == 0) {
+            retorno = true;
+        } else {
+            for (int i = 0; i < menu.size(); i ++) {
+                if ( adicional.equals(menu.getItem(i).getTitle().toString())) {
+                    retorno = false;
+                }
+            }
+        }
+
+        return retorno;
+    }
 
 }

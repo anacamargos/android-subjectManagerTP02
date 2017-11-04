@@ -92,7 +92,7 @@ public class Tab_PdfsFragment extends Fragment {
             String uriString = uri.toString();
             try {
                 //arquivosList.add(new Arquivo(uri.toString()));
-                listaDePdf.add(uri.toString());
+                listaDePdf.add(uriString);
                 recyclerViewAdapter.notifyDataSetChanged();
             } catch (Exception e ) {
                 e.printStackTrace();
