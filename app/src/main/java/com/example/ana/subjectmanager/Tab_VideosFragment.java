@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -40,6 +41,9 @@ public class Tab_VideosFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_tab_videos, container, false);
+
+        Button btn = (Button) view.findViewById(R.id.inserirVideo);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         listaDeVideo = new ArrayList<String>();
         listaDeVideo.add("Oi");
@@ -55,6 +59,13 @@ public class Tab_VideosFragment extends Fragment {
         recyclerViewAdapter = new RecyclerViewAdapter(listaDeVideo);
         recyclerView.setAdapter(recyclerViewAdapter);
 
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listaDeVideo.add("TESTEEEE");
+                recyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
 
 
         //TextView teste = (TextView)view.findViewById(R.id.nomeVideo);

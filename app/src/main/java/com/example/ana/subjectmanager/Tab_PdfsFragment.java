@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class Tab_PdfsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tab_pdfs, container, false);
 
+        Button btn = (Button) view.findViewById(R.id.inserirPdf);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         listaDePdf = new ArrayList<String>();
         listaDePdf.add("Oi");
@@ -53,6 +56,14 @@ public class Tab_PdfsFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerViewAdapter = new RecyclerViewAdapter(listaDePdf);
         recyclerView.setAdapter(recyclerViewAdapter);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listaDePdf.add("Teste");
+                recyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
 
         //TextView teste = (TextView)view.findViewById(R.id.textPdf);
         //teste.setText(subjectName);

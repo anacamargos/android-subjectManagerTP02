@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity
                 args.putString("subjectName",item.getTitle().toString());
                 TransitionFragment fragment = new TransitionFragment();
                 fragment.setArguments(args);
-                ft.replace(R.id.coordinator_layout, fragment);
+                ft.replace(R.id.frame_layout, fragment);
                 ft.commit();
                 break;
             }

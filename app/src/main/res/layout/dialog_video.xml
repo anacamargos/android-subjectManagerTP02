@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/TVVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Inserir o video"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:textSize="25sp"
+        android:layout_gravity="center"/>
+
+    <EditText
+        android:id="@+id/eTVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textCapWords"
+        android:imeOptions="actionDone"
+        android:hint="Video"
+        android:layout_marginTop="10dp"
+        />
+
+
+
+    <Button
+        android:id="@+id/btnInserirVideo"
+        android:text="Inserir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:background="@color/colorAccent"
+        android:textColor="@android:color/white"/>
+
+
+</LinearLayout>

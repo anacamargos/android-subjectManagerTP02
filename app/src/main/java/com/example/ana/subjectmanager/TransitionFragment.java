@@ -39,8 +39,9 @@ public class TransitionFragment extends Fragment {
         subjectName = this.getArguments().getString("subjectName");
         getActivity().setTitle(subjectName);
 
-        View contenedor = (View)container.getParent();
-        appBar = (AppBarLayout)contenedor.findViewById(R.id.appbar);
+        //View contenedor = (View)container.getParent();
+        //appBar = (AppBarLayout)contenedor.findViewById(R.id.appbar);
+        appBar = (AppBarLayout)getActivity().findViewById(R.id.appbar);
         tabLayout = new TabLayout(getActivity());
 
         tabLayout.setTabTextColors(Color.parseColor("#FFFFFF"), Color.parseColor("#FFFFFF"));
