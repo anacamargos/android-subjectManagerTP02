@@ -89,6 +89,21 @@ public class Tab_PdfsFragment extends Fragment {
             }
         });
 
+        //recyclerView.setOnClickListener(new );
+
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+
+            @Override public void onItemClick(View view, int position) {
+                // do whatever
+                Intent mudarPg = new Intent(getContext(),OpenPdfActivity.class);
+                mudarPg.putExtra("caminho",listaDePdf.get(position));
+                startActivity(mudarPg);
+            }
+
+            @Override public void onLongItemClick(View view, int position) {
+                // do whatever
+            }
+        }));
         //TextView teste = (TextView)view.findViewById(R.id.textPdf);
         //teste.setText(subjectName);
         return view;
