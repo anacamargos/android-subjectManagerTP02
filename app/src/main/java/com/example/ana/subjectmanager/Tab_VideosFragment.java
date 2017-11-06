@@ -2,6 +2,8 @@ package com.example.ana.subjectmanager;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
@@ -107,6 +109,31 @@ public class Tab_VideosFragment extends Fragment {
             }
         });
 
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+            @Override public void onItemClick(View view, int position) {
+                // do whatever
+                String video_path = listaDeVideo.get(position);
+                if ( video_path.contains("youtube")) {
+                    Uri uri = Uri.parse(video_path);
+                    uri = Uri.parse("vnd.youtube:" + uri.getQueryParameter("v"));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                } else if ( video_path.contains("youtu.be")) {
+                    String [] aux = video_path.split("youtu.be/");
+                    String aux2 = aux[1];
+                    String video_path2 = "http://youtube.com/watch?v=" + aux2;
+                    Uri uri = Uri.parse(video_path2);
+                    uri = Uri.parse("vnd.youtube:" + uri.getQueryParameter("v"));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
+            }
+
+            @Override public void onLongItemClick(View view, int position) {
+                // do whatever
+            }
+
+        }));
 
         //TextView teste = (TextView)view.findViewById(R.id.nomeVideo);
         //teste.setText(subjectName);
