@@ -1,6 +1,7 @@
 package com.example.ana.subjectmanager;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
@@ -16,6 +17,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 
@@ -25,6 +33,7 @@ import java.util.ArrayList;
 public class Tab_VideosFragment extends Fragment {
 
     String subjectName;
+    String nomeDoArquivo;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     RecyclerViewAdapter recyclerViewAdapter;
@@ -32,6 +41,7 @@ public class Tab_VideosFragment extends Fragment {
 
     public Tab_VideosFragment ( String subjectName ) {
         this.subjectName = subjectName;
+        this.nomeDoArquivo = subjectName + "Video.txt";
     }
 
     public Tab_VideosFragment() {
@@ -50,8 +60,9 @@ public class Tab_VideosFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         listaDeVideo = new ArrayList<String>();
-        listaDeVideo.add("Oi");
-        listaDeVideo.add("Oi1");
+        listaDeVideo = readFile(listaDeVideo);
+        //listaDeVideo.add("Oi");
+        //listaDeVideo.add("Oi1");
 
 
         layoutManager = new LinearLayoutManager(getActivity());
@@ -81,6 +92,7 @@ public class Tab_VideosFragment extends Fragment {
                         if (!videoEt.getText().toString().isEmpty() ) {
                             String video = videoEt.getText().toString();
                             listaDeVideo.add(video);
+                            addNoFile(video);
                             dialog.dismiss();
                             Toast.makeText(getActivity(), "Inserido com sucesso!", Toast.LENGTH_SHORT).show();
                             recyclerViewAdapter.notifyDataSetChanged();
@@ -101,4 +113,37 @@ public class Tab_VideosFragment extends Fragment {
         return view;
     }
 
+    public ArrayList<String> readFile (ArrayList<String> listaDeVideo) {
+        File file = getContext().getFileStreamPath(nomeDoArquivo);
+        String lineFromFile;
+        if(file.exists()) {
+            try {
+                //System.out.println("PASSEI POR AQUIIIIIII");
+                //BufferedReader reader = new BufferedReader(new FileReader(nomeDoArquivo));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(getContext().openFileInput(nomeDoArquivo)));
+                while ((lineFromFile = reader.readLine()) != null) {
+                    //StringTokenizer tokens = new StringTokenizer(lineFromFile);
+                    listaDeVideo.add(lineFromFile);
+                    System.out.println(lineFromFile);
+                }
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+
+        }
+        return listaDeVideo;
+    }
+
+    public void addNoFile ( String adicional ) {
+        try {
+            FileOutputStream fos = getContext().openFileOutput(nomeDoArquivo, Context.MODE_APPEND);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            outputStreamWriter.write(adicional + "\n");
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        } catch (Exception e ) {
+            e.printStackTrace();
+            Toast.makeText(getContext(),"Erro ao salvar arquivo", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

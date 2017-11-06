@@ -1,6 +1,7 @@
 package com.example.ana.subjectmanager;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,8 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import static android.app.Activity.RESULT_OK;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 
@@ -24,6 +33,7 @@ import java.util.ArrayList;
 public class Tab_PdfsFragment extends Fragment {
 
     String subjectName;
+    String nomeDoArquivo;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     RecyclerViewAdapter recyclerViewAdapter;
@@ -33,6 +43,7 @@ public class Tab_PdfsFragment extends Fragment {
 
     public Tab_PdfsFragment ( String subjectName ) {
         this.subjectName = subjectName;
+        this.nomeDoArquivo = subjectName + "Pdf.txt";
     }
 
     public Tab_PdfsFragment() {
@@ -50,8 +61,9 @@ public class Tab_PdfsFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         listaDePdf = new ArrayList<String>();
-        listaDePdf.add("Oi");
-        listaDePdf.add("Oi1");
+        listaDePdf = readFile(listaDePdf);
+        //listaDePdf.add("Oi");
+        //listaDePdf.add("Oi1");
 
 
         layoutManager = new LinearLayoutManager(getActivity());
@@ -93,11 +105,46 @@ public class Tab_PdfsFragment extends Fragment {
             try {
                 //arquivosList.add(new Arquivo(uri.toString()));
                 listaDePdf.add(uriString);
+                addNoFile(uriString);
                 recyclerViewAdapter.notifyDataSetChanged();
             } catch (Exception e ) {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    public ArrayList<String> readFile (ArrayList<String> listaDeVideo) {
+        File file = getContext().getFileStreamPath(nomeDoArquivo);
+        String lineFromFile;
+        if(file.exists()) {
+            try {
+                //System.out.println("PASSEI POR AQUIIIIIII");
+                //BufferedReader reader = new BufferedReader(new FileReader(nomeDoArquivo));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(getContext().openFileInput(nomeDoArquivo)));
+                while ((lineFromFile = reader.readLine()) != null) {
+                    //StringTokenizer tokens = new StringTokenizer(lineFromFile);
+                    listaDeVideo.add(lineFromFile);
+                    System.out.println(lineFromFile);
+                }
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+
+        }
+        return listaDeVideo;
+    }
+
+    public void addNoFile ( String adicional ) {
+        try {
+            FileOutputStream fos = getContext().openFileOutput(nomeDoArquivo, Context.MODE_APPEND);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            outputStreamWriter.write(adicional + "\n");
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        } catch (Exception e ) {
+            e.printStackTrace();
+            Toast.makeText(getContext(),"Erro ao salvar arquivo", Toast.LENGTH_SHORT).show();
         }
     }
 }

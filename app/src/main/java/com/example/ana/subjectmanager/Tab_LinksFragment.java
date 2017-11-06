@@ -1,6 +1,7 @@
 package com.example.ana.subjectmanager;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +17,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 
@@ -25,6 +32,7 @@ import java.util.ArrayList;
 public class Tab_LinksFragment extends Fragment {
 
     String subjectName;
+    String nomeDoArquivo;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     RecyclerViewAdapter recyclerViewAdapter;
@@ -33,6 +41,7 @@ public class Tab_LinksFragment extends Fragment {
 
     public Tab_LinksFragment (String subjectName) {
         this.subjectName = subjectName;
+        this.nomeDoArquivo = subjectName + "Link.txt";
     }
 
     public Tab_LinksFragment() {
@@ -50,16 +59,10 @@ public class Tab_LinksFragment extends Fragment {
         Button btn = (Button) view.findViewById(R.id.inserirLink);
 
         listaDeLinks = new ArrayList<String>();
+        listaDeLinks = readFile(listaDeLinks);
 
-
-
-        //ListView listView = (ListView) view.findViewById(R.id.listLink);
-        //adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaDeLinks);
-        //adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listaDeLinks);
-        //listView.setAdapter(adapter);
-
-        listaDeLinks.add("Oi");
-        listaDeLinks.add("Oi1");
+        //listaDeLinks.add("Oi");
+        //listaDeLinks.add("Oi1");
 
 
         //TextView teste = (TextView)view.findViewById(R.id.textLink);
@@ -94,8 +97,9 @@ public class Tab_LinksFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         if (!linkEt.getText().toString().isEmpty() ) {
-                            String video = linkEt.getText().toString();
-                            listaDeLinks.add(video);
+                            String link = linkEt.getText().toString();
+                            listaDeLinks.add(link);
+                            addNoFile(link);
                             dialog.dismiss();
                             Toast.makeText(getActivity(), "Inserido com sucesso!", Toast.LENGTH_SHORT).show();
                             recyclerViewAdapter.notifyDataSetChanged();
@@ -112,6 +116,40 @@ public class Tab_LinksFragment extends Fragment {
         return view;
 
 
+    }
+
+    public ArrayList<String> readFile (ArrayList<String> listaDeVideo) {
+        File file = getContext().getFileStreamPath(nomeDoArquivo);
+        String lineFromFile;
+        if(file.exists()) {
+            try {
+                //System.out.println("PASSEI POR AQUIIIIIII");
+                //BufferedReader reader = new BufferedReader(new FileReader(nomeDoArquivo));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(getContext().openFileInput(nomeDoArquivo)));
+                while ((lineFromFile = reader.readLine()) != null) {
+                    //StringTokenizer tokens = new StringTokenizer(lineFromFile);
+                    listaDeVideo.add(lineFromFile);
+                    System.out.println(lineFromFile);
+                }
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+
+        }
+        return listaDeVideo;
+    }
+
+    public void addNoFile ( String adicional ) {
+        try {
+            FileOutputStream fos = getContext().openFileOutput(nomeDoArquivo, Context.MODE_APPEND);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            outputStreamWriter.write(adicional + "\n");
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        } catch (Exception e ) {
+            e.printStackTrace();
+            Toast.makeText(getContext(),"Erro ao salvar arquivo", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity
                             if ( naoTemNoMenu(subject)) {
                                 addNoFile(subject);
                                 menu.add(subject);
+                                writeNewFiles(subject);
                                 readFile();
                                 dialog.dismiss();
                                 Toast.makeText(MainActivity.this, "Inserido com sucesso!", Toast.LENGTH_SHORT).show();
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-
+        //deleteFile();
         readAndUpdate();
         readFile();
 
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity
             menu = navigationView.getMenu();
             for (int i = 0; i < menu.size(); i ++ ) {
                 outputStreamWriter.write(menu.getItem(i).getTitle().toString()+ "\n");
+                writeNewFiles(menu.getItem(i).getTitle().toString());
             }
             outputStreamWriter.flush();
             outputStreamWriter.close();
@@ -230,6 +232,7 @@ public class MainActivity extends AppCompatActivity
                 while (lineFromFile != null) {
                     menu.add(lineFromFile);
                     lineFromFile = reader.readLine();
+                    writeNewFiles(lineFromFile);
                 }
             } catch ( IOException e ) {
                 e.printStackTrace();
@@ -248,6 +251,11 @@ public class MainActivity extends AppCompatActivity
                 menu.add("AED II");
                 menu.add("AED III");
 
+                writeNewFiles("AED I");
+                writeNewFiles("AED II");
+                writeNewFiles("AED III");
+
+
             } catch (IOException e ) {
                 e.printStackTrace();
             }
@@ -265,6 +273,7 @@ public class MainActivity extends AppCompatActivity
     public void deleteFile () {
         File file = new File(getFilesDir(),nomeMenuArquivo);
         if (file.exists()) {
+            deleteAnotherFiles(nomeMenuArquivo);
             deleteFile(nomeMenuArquivo);
         }
     }
@@ -283,6 +292,72 @@ public class MainActivity extends AppCompatActivity
         }
 
         return retorno;
+    }
+
+    public void writeNewFiles ( String nomeMateria) {
+        String nomeArquivo = nomeMateria + "Video.txt";
+        String nomeArquivo2 = nomeMateria + "Link.txt";
+        String nomeArquivo3 = nomeMateria + "Pdf.txt";
+        try {
+            FileOutputStream fos = openFileOutput(nomeArquivo , MODE_APPEND);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileOutputStream fos = openFileOutput(nomeArquivo2 , MODE_APPEND);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileOutputStream fos = openFileOutput(nomeArquivo3 , MODE_APPEND);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void deleteAnotherFiles ( String nomeMenuArquivo ) {
+        String lineFromFile;
+        String nomeArquivo1;
+        String nomeArquivo2;
+        String nomeArquivo3;
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(openFileInput(nomeMenuArquivo)));
+            while ((lineFromFile = reader.readLine()) != null) {
+                nomeArquivo1 = lineFromFile + "Video.txt";
+                nomeArquivo2 = lineFromFile + "Link.txt";
+                nomeArquivo3 = lineFromFile + "Pdf.txt";
+
+                File file = new File(getFilesDir(),nomeArquivo1);
+                if (file.exists()) {
+                    deleteFile(nomeArquivo1);
+                }
+                File file2 = new File(getFilesDir(),nomeArquivo2);
+                if (file2.exists()) {
+                    deleteFile(nomeArquivo2);
+                }
+                File file3 = new File(getFilesDir(),nomeArquivo3);
+                if (file3.exists()) {
+                    deleteFile(nomeArquivo3);
+                }
+                //StringTokenizer tokens = new StringTokenizer(lineFromFile);
+                //System.out.println(lineFromFile);
+            }
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
     }
 
 }
