@@ -2,6 +2,8 @@ package com.example.ana.subjectmanager;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -113,6 +115,28 @@ public class Tab_LinksFragment extends Fragment {
             }
         });
 
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+            @Override public void onItemClick(View view, int position) {
+                // do whatever
+                String url = listaDeLinks.get(position).toString();
+                if (checkhttps(url)){
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                }
+                else{
+                    String url2 = "https://"+url;
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url2));
+                    startActivity(intent);
+                }
+            }
+
+            @Override public void onLongItemClick(View view, int position) {
+                // do whatever
+            }
+        }));
+
         return view;
 
 
@@ -150,6 +174,28 @@ public class Tab_LinksFragment extends Fragment {
             e.printStackTrace();
             Toast.makeText(getContext(),"Erro ao salvar arquivo", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean checkhttps(String url){
+        boolean resp = false;
+        if (url.charAt(0) == 'h'){
+            if (url.charAt(1) == 't'){
+                if (url.charAt(2) == 't'){
+                    if (url.charAt(3) == 'p'){
+                        if (url.charAt(4) == 's'){
+                            if (url.charAt(5) == ':'){
+                                if (url.charAt(6) == '/'){
+                                    if (url.charAt(7) == '/'){
+                                        resp = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return resp;
     }
 
 
